@@ -9,6 +9,7 @@
 #include "common/mime.h"
 #include "common/utf8.h"
 #include "common/ceph_json.h"
+#include "include/dtrace_probe.h"
 
 #include "rgw_rados.h"
 #include "rgw_op.h"
@@ -835,6 +836,7 @@ void RGWGetObj::pre_exec()
 
 void RGWGetObj::execute()
 {
+  TRACE(CEPH_RGW_GET_OBJECT());
   void *handle = NULL;
   utime_t start_time = s->time;
   bufferlist bl;

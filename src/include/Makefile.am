@@ -18,6 +18,15 @@ rados_include_DATA = \
 	$(srcdir)/include/crc32c.h \
 	$(srcdir)/include/memory.h
 
+
+if ENABLE_DTRACE
+$(srcdir)/include/ceph_probes.h: $(srcdir)/include/ceph_probes.d
+	$(DTRACE) -C -h -s $< -o $@
+
+$(srcdir)/include/ceph_probes.o: $(srcdir)/include/ceph_probes.d
+	$(DTRACE) -C -G -s $< -o $@
+endif
+
 noinst_HEADERS += \
 	include/Context.h \
 	include/CompatSet.h \

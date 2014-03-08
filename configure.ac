@@ -698,6 +698,28 @@ AC_CHECK_HEADERS([linux/types.h])
 AC_CHECK_TYPES([__u8, __s8, __u16, __s16, __u32, __s32, __u64, __s64, __le16,
   __be16, __le32, __be32, __le64, __be64], [], [], [[#include <linux/types.h>]])
 
+
+AC_MSG_CHECKING([whether to include dtrace/systemtap tracing support])
+AC_ARG_ENABLE([dtrace],
+              [AS_HELP_STRING([--enable-dtrace],
+                              [Enable inclusion of dtrace/systemtap trace support])],
+              [ENABLE_DTRACE="${enableval}"], [ENABLE_DTRACE='no'])
+AM_CONDITIONAL([ENABLE_DTRACE], [test x$ENABLE_DTRACE = xyes])
+AC_MSG_RESULT(${ENABLE_DTRACE})
+
+if test "x${ENABLE_DTRACE}" = xyes; then
+  # Additional configuration for --enable-dtrace is HERE
+  AC_CHECK_PROGS(DTRACE, dtrace)
+  if test -z "$DTRACE"; then
+     AC_MSG_ERROR([dtrace not found])
+  fi
+  AC_CHECK_HEADER([sys/sdt.h], [SDT_H_FOUND='yes'],
+                  [SDT_H_FOUND='no';
+                  AC_MSG_ERROR([systemtap support needs sys/sdt.h header])])
+  AC_DEFINE([HAVE_DTRACE], [1], [Define to 1 if using  probes.])
+fi
+
+
 # Checks for typedefs, structures, and compiler characteristics.
 #AC_HEADER_STDBOOL
 #AC_C_CONST
