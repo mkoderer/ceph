@@ -525,6 +525,7 @@ enum {
   OPT_MFA_LIST,
   OPT_MFA_CHECK,
   OPT_MFA_RESYNC,
+  OPT_HELP,
 };
 
 static int get_cmd(const char *cmd, const char *prev_cmd, const char *prev_prev_cmd, bool *need_more)
@@ -542,6 +543,7 @@ static int get_cmd(const char *cmd, const char *prev_cmd, const char *prev_prev_
       strcmp(cmd, "error") == 0 ||
       strcmp(cmd, "gc") == 0 ||
       strcmp(cmd, "global") == 0 ||
+      strcmp(cmd, "help") == 0 ||
       strcmp(cmd, "key") == 0 ||
       strcmp(cmd, "log") == 0 ||
       strcmp(cmd, "lc") == 0 ||
@@ -977,8 +979,9 @@ static int get_cmd(const char *cmd, const char *prev_cmd, const char *prev_prev_
       return OPT_MFA_CHECK;
     if (strcmp(cmd, "resync") == 0)
       return OPT_MFA_RESYNC;
+  } else if (strcmp(prev_prev_cmd, "help") == 0) {
+    return OPT_HELP
   }
-
   return -EINVAL;
 }
 
@@ -7636,6 +7639,23 @@ next:
     }
 
   }
+  if (opt_cmd == OPT_HELP) {
+    handle_help(args)
+  }
+
 
   return 0;
+}
+/*
+*/
+void handle_help(vector<const char*> args){
+  if (args.empty()) {
+    usage();
+    exit(0);
+  }
+  std::vector<const char*>::iterator i ;
+  for (i = args.begin(); i != args.end(); ++i) {
+    cout << "Get param:" << i << "\n";
+  }
+
 }
